@@ -1,0 +1,11 @@
+开发了一个python程序，用于将一组单词通过 Anki-Connect和FastWQ，在Anki中添加单词闪卡
+
+1、从flomo里面拷贝存储的单词或短语，黏贴到anki_add_notes.py程序中，运行程序即可，注意要修改合适的deck，在ItemFactory中可以修改WordItem和PhraseItem的定义，如笔记模板的名称、各字段的名称等。
+
+2、正面例句构建用deepseek获取。
+
+3、运行程序后，对于单词，可以在anki软件的相应deck中选中新增的note，点菜单上的FastWQ查询，或者使用Crtl-Q快捷键，完成其他字段的填写，或者强迫改写字段。
+
+4、还可以微调，通过FastWQ设置参数，可以对音标、发音等元素设置不同的来源，这些来源有的本地词典，有的是免费API或直接抓取网页（容易失效，但是FastWQ有自己的配置程序，可以用文本编辑器打开）。
+
+5、可以进一步完善的地方：WordItem和PhraseItem需要保证都有model_name字段，WordProcessor和PhraseProcessor需要保证都有produce_fields函数，目前在ItemFactory和ProcessorFactory中只使用了Union方法，不是特别好。
