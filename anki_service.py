@@ -56,6 +56,12 @@ class AnkiService:
                     raise RuntimeError(f"Anki-Connect '{action}' 失败: {e}") from e
                 time.sleep(self.backoff ** attempt)
 
+    # ---------- Media ----------
+    def store_media(self, filename: str, data: bytes) -> str:
+        """将音频/图片字节存入 Anki 媒体库，返回实际存储的文件名。"""
+        import base64
+        return self._ac("storeMediaFile", filename=filename, data=base64.b64encode(data).decode())
+
     # ---------- Deck / Model ----------
     def ensure_deck(self, deck_name: Optional[str] = None) -> None:
         deck_name = deck_name or self.deck
