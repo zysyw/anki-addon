@@ -137,10 +137,31 @@ def parse_items(raw: str) -> list[str]:
     return [s.strip() for s in re.split(r"[,，]", raw) if s.strip()]
 
 
+def check_anki_connect() -> bool:
+    """检查 Anki-Connect 是否可用，不可用时打印提示。"""
+    try:
+        word_anki._ac("version")
+        return True
+    except Exception:
+        print()
+        print("  ✗ 无法连接到 Anki-Connect")
+        print()
+        print("  请确认：")
+        print("  1. Anki 软件已打开")
+        print("  2. 已安装 Anki-Connect 插件（插件代码：2055492159）")
+        print("     菜单 → 工具 → 插件 → 获取插件，输入上述代码安装后重启 Anki")
+        print()
+        return False
+
+
 def main():
     print("=" * 55)
     print("  Anki 制卡工具  （单词/短语，逗号分隔，留空退出）")
     print("=" * 55)
+
+    if not check_anki_connect():
+        input("  按回车键退出...")
+        return
 
     while True:
         try:
@@ -155,6 +176,23 @@ def main():
 
         items = parse_items(raw)
         if not items:
+            continue
+
+        # 确认牌组
+        words   = [x for x in items if " " not in x]
+        phrases = [x for x in items if " " in x]
+        print()
+        if words:
+            print(f"  单词 → 牌组「{WORD_DECK}」：{', '.join(words)}")
+        if phrases:
+            print(f"  短语 → 牌组「{PHRASE_DECK}」：{', '.join(phrases)}")
+        try:
+            confirm = input("\n确认添加？(y/回车 确认，其他取消): ").strip().lower()
+        except (EOFError, KeyboardInterrupt):
+            print("\n退出。")
+            break
+        if confirm not in ("", "y", "yes"):
+            print("已取消。")
             continue
 
         print(f"\n共 {len(items)} 项，开始处理...\n")
